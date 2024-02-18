@@ -51,9 +51,14 @@ const honeyBookJwtAuth = (): RequestHandler => {
 			try {
 				const { email } = jwtPayload;
 				const user = await Container.get(UserRepository).findOne({
-					where: { email },
+					where: { email: email! },
 				});
-				return done(null, user);
+
+				if (user) {
+					return done(null, user);
+				}
+
+				return done(null, false, { message: 'User not found' });
 			} catch (error) {
 				Container.get(Logger).debug('Failed to extract user from JWT payload', { jwtPayload });
 				return done(null, false, { message: 'User not found' });

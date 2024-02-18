@@ -6,6 +6,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { BasicAuthResult } from 'basic-auth';
 import basicAuth from 'basic-auth';
+import jwt from 'jsonwebtoken';
 
 import validator from 'validator';
 import YAML from 'yamljs';
@@ -115,7 +116,7 @@ async function createApiRouter(
 
 						return true;
 					},
-					HBAuth: async (
+					HBBasicAuth: async (
 						req: express.Request,
 						_scopes: unknown,
 						schema: OpenAPIV3.ApiKeySecurityScheme,
@@ -123,6 +124,32 @@ async function createApiRouter(
 						const {name} = basicAuth(req) as BasicAuthResult;
 						const user = await Container.get(UserRepository).findOne({
 							where: { email: name },
+						});
+
+						if (!user) return false;
+
+						void Container.get(InternalHooks).onUserInvokedApi({
+							user_id: user.id,
+							path: req.path,
+							method: req.method,
+							api_version: version,
+						});
+
+						req.user = user;
+
+						return true;
+					},
+					HBJwtAuth: async (
+						req: express.Request,
+						_scopes: unknown,
+						schema: OpenAPIV3.ApiKeySecurityScheme,
+					): Promise<boolean> => {
+						const token = req.headers.authorization?.split('Bearer ')[1];
+						if (!token) return false;
+
+						const { email } = jwt.verify(token, '123') as JsonObject;
+						const user = await Container.get(UserRepository).findOne({
+							where: { email },
 						});
 
 						if (!user) return false;
