@@ -2,7 +2,7 @@ import type { Application, NextFunction, Request, RequestHandler, Response } fro
 import { Container } from 'typedi';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
-import { Strategy } from 'passport-jwt';
+import { Strategy, ExtractJwt } from 'passport-jwt';
 import { BasicStrategy } from 'passport-http';
 import { sync as globSync } from 'fast-glob';
 import type { JwtPayload } from '@/Interfaces';
@@ -37,7 +37,31 @@ const userManagementJwtAuth = (): RequestHandler => {
 		},
 	);
 
-	passport.use(jwtStrategy);
+	passport.use('n8n-jwt', jwtStrategy);
+	return passport.initialize();
+};
+
+const honeyBookJwtAuth = (): RequestHandler => {
+	const jwtStrategy = new Strategy(
+		{
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			secretOrKey: '123',
+		},
+		async (jwtPayload: JwtPayload, done) => {
+			try {
+				const { email } = jwtPayload;
+				const user = await Container.get(UserRepository).findOne({
+					where: { email },
+				});
+				return done(null, user);
+			} catch (error) {
+				Container.get(Logger).debug('Failed to extract user from JWT payload', { jwtPayload });
+				return done(null, false, { message: 'User not found' });
+			}
+		},
+	);
+
+	passport.use('hb-jwt', jwtStrategy);
 	return passport.initialize();
 };
 
@@ -54,7 +78,7 @@ const userManagementBasicAuth = (): RequestHandler => {
 		}
 	});
 
-	passport.use(basicStrategy);
+	passport.use('basic', basicStrategy);
 	return passport.initialize();
 };
 
@@ -87,7 +111,7 @@ export const refreshExpiringCookie = (async (req: AuthenticatedRequest, res, nex
 
 // TODO: Oz: we can uncomment this to change the internal API auth to basic auth
 // const passportMiddleware = passport.authenticate('basic', { session: false }) as RequestHandler;
-const passportMiddleware = passport.authenticate('jwt', { session: false }) as RequestHandler;
+const passportMiddleware = passport.authenticate(['n8n-jwt', 'hb-jwt', 'basic'], { session: false }) as RequestHandler;
 
 const staticAssets = globSync(['**/*.html', '**/*.svg', '**/*.png', '**/*.ico'], {
 	cwd: EDITOR_UI_DIST_DIR,
@@ -113,6 +137,7 @@ export const setupAuthMiddlewares = (
 	restEndpoint: string,
 ) => {
 	app.use(userManagementJwtAuth());
+	app.use(honeyBookJwtAuth());
 	app.use(userManagementBasicAuth());
 
 	app.use(async (req: Request, res: Response, next: NextFunction) => {
