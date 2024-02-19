@@ -12,14 +12,14 @@ import { NodeApiError } from 'n8n-workflow';
 
 type thisT = IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions | IPollFunctions;
 
-export async function withAuthentication(this: thisT, qs: IDataObject) {
+export async function withAuthentication(this: thisT, qs: IDataObject): Promise<IDataObject> {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
-	const defaultCredentials = await this.getDefaultCredentials!('honeyBookApi');
+	const defaultCredentials = await this.getDefaultCredentials('honeyBookApi');
 
 	return {
 		...qs,
 		...defaultCredentials,
-	};
+	} as IDataObject;
 }
 
 export async function honeyBookApiRequest(
@@ -27,7 +27,7 @@ export async function honeyBookApiRequest(
 	method: IHttpRequestMethods,
 	resource: string,
 
-	body: any = {},
+	body: IDataObject = {},
 	qs: IDataObject = {},
 	uri?: string,
 	option: IDataObject = {},
@@ -38,11 +38,11 @@ export async function honeyBookApiRequest(
 			method,
 			qs: await withAuthentication.call(this, qs),
 			body,
-			url: uri || `http://localhost:3000/api/v2${resource}`,
+			url: uri ?? `http://localhost:3000/api/v2${resource}`,
 			json: true,
 		};
 		options = Object.assign({}, options, option);
-		if (Object.keys(body as IDataObject).length === 0) {
+		if (Object.keys(body).length === 0) {
 			delete options.body;
 		}
 

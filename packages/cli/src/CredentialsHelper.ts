@@ -98,7 +98,7 @@ export class CredentialsHelper extends ICredentialsHelper {
 		private readonly credentialTypes: CredentialTypes,
 		private readonly nodeTypes: NodeTypes,
 		private readonly credentialsOverwrites: CredentialsOverwrites,
-		public readonly credentialsRepository: CredentialsRepository,
+		private readonly credentialsRepository: CredentialsRepository,
 		private readonly sharedCredentialsRepository: SharedCredentialsRepository,
 	) {
 		super();
@@ -254,6 +254,10 @@ export class CredentialsHelper extends ICredentialsHelper {
 	 */
 	getParentTypes(typeName: string): string[] {
 		return this.credentialTypes.getParentTypes(typeName);
+	}
+
+	async getCredentialsByType(type: string): Promise<CredentialsEntity[]> {
+		return await this.credentialsRepository.find({ where: { type } });
 	}
 
 	/**

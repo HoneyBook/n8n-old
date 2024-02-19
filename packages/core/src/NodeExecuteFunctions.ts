@@ -1874,21 +1874,22 @@ export function getAdditionalKeys(
 export async function getDefaultCredentials(
 	type: string,
 	additionalData: IWorkflowExecuteAdditionalData,
-) {
+): Promise<ICredentialDataDecryptedObject | null> {
+	// additionalData.credentialsHelper.
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-	const cr = (additionalData.credentialsHelper as any).credentialsRepository as any;
-	const credentials = await cr.find({ where: { type } });
+	const credentials = await additionalData.credentialsHelper.getCredentialsByType(type);
 
-	return (
-		credentials.length &&
-		(await additionalData.credentialsHelper.getDecrypted(
-			additionalData,
-			credentials[0],
-			type,
-			'internal',
-			undefined,
-			false,
-		))
+	if (credentials?.length === 0) {
+		return null;
+	}
+
+	return await additionalData.credentialsHelper.getDecrypted(
+		additionalData,
+		credentials[0],
+		type,
+		'internal',
+		undefined,
+		false,
 	);
 }
 
@@ -3234,12 +3235,10 @@ export function getExecutePollFunctions(
 			},
 			getMode: () => mode,
 			getActivationMode: () => activation,
-			getCredentials: async (type) => {
-				return await getCredentials(workflow, node, type, additionalData, mode);
-			},
-			getDefaultCredentials: async (type: string) => {
-				await getDefaultCredentials(type, additionalData);
-			},
+			getCredentials: async (type) =>
+				await getCredentials(workflow, node, type, additionalData, mode),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getNodeParameter: (
 				parameterName: string,
 				fallbackValue?: any,
@@ -3301,12 +3300,10 @@ export function getExecuteTriggerFunctions(
 			},
 			getMode: () => mode,
 			getActivationMode: () => activation,
-			getCredentials: async (type) => {
-				return await getCredentials(workflow, node, type, additionalData, mode);
-			},
-			getDefaultCredentials: async (type: string) => {
-				return await getDefaultCredentials(type, additionalData);
-			},
+			getCredentials: async (type) =>
+				await getCredentials(workflow, node, type, additionalData, mode),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getNodeParameter: (
 				parameterName: string,
 				fallbackValue?: any,
@@ -3664,8 +3661,8 @@ export function getExecuteSingleFunctions(
 			getContext(type: ContextType): IContextObject {
 				return NodeHelpers.getContext(runExecutionData, type, node);
 			},
-			getCredentials: async (type) => {
-				return await getCredentials(
+			getCredentials: async (type) =>
+				await getCredentials(
 					workflow,
 					node,
 					type,
@@ -3676,11 +3673,9 @@ export function getExecuteSingleFunctions(
 					runIndex,
 					connectionInputData,
 					itemIndex,
-				);
-			},
-			getDefaultCredentials: async (type: string) => {
-				return await getDefaultCredentials(type, additionalData);
-			},
+				),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getInputData: (inputIndex = 0, inputName = 'main') => {
 				if (!inputData.hasOwnProperty(inputName)) {
 					// Return empty array because else it would throw error when nothing is connected to input
@@ -3791,12 +3786,10 @@ export function getLoadOptionsFunctions(
 	return ((workflow: Workflow, node: INode, path: string) => {
 		return {
 			...getCommonWorkflowFunctions(workflow, node, additionalData),
-			getCredentials: async (type) => {
-				return await getCredentials(workflow, node, type, additionalData, 'internal');
-			},
-			getDefaultCredentials: async (type: string) => {
-				return await getDefaultCredentials(type, additionalData);
-			},
+			getCredentials: async (type) =>
+				await getCredentials(workflow, node, type, additionalData, 'internal'),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getCurrentNodeParameter: (
 				parameterPath: string,
 				options?: IGetNodeParameterOptions,
@@ -3873,12 +3866,10 @@ export function getExecuteHookFunctions(
 	return ((workflow: Workflow, node: INode) => {
 		return {
 			...getCommonWorkflowFunctions(workflow, node, additionalData),
-			getCredentials: async (type) => {
-				return await getCredentials(workflow, node, type, additionalData, mode);
-			},
-			getDefaultCredentials: async (type: string) => {
-				return await getDefaultCredentials(type, additionalData);
-			},
+			getCredentials: async (type) =>
+				await getCredentials(workflow, node, type, additionalData, mode),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getMode: () => mode,
 			getActivationMode: () => activation,
 			getNodeParameter: (
@@ -3950,12 +3941,10 @@ export function getExecuteWebhookFunctions(
 				}
 				return additionalData.httpRequest.body;
 			},
-			getCredentials: async (type) => {
-				return await getCredentials(workflow, node, type, additionalData, mode);
-			},
-			getDefaultCredentials: async (type: string) => {
-				return await getDefaultCredentials(type, additionalData);
-			},
+			getCredentials: async (type) =>
+				await getCredentials(workflow, node, type, additionalData, mode),
+			getDefaultCredentials: async (type: string) =>
+				await getDefaultCredentials(type, additionalData),
 			getHeaderData(): IncomingHttpHeaders {
 				if (additionalData.httpRequest === undefined) {
 					throw new ApplicationError('Request is missing');

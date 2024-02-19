@@ -212,6 +212,8 @@ export abstract class ICredentialsHelper {
 		type: string,
 	): Promise<ICredentials>;
 
+	abstract getCredentialsByType(type: string): Promise<INodeCredentialsDetails[]>;
+
 	abstract getDecrypted(
 		additionalData: IWorkflowExecuteAdditionalData,
 		nodeCredentials: INodeCredentialsDetails,
@@ -715,7 +717,10 @@ export interface NodeHelperFunctions {
 }
 
 export interface RequestHelperFunctions {
-	getDefaultCredentials: (this: IExecuteFunctions, type: string) => any;
+	getDefaultCredentials: (
+		this: IExecuteFunctions,
+		type: string,
+	) => Promise<ICredentialDataDecryptedObject | null>;
 	request(uriOrObject: string | IDataObject | any, options?: IDataObject): Promise<any>;
 	requestWithAuthentication(
 		this: IAllExecuteFunctions,
@@ -756,7 +761,7 @@ export interface RequestHelperFunctions {
 export interface FunctionsBase {
 	logger: Logger;
 	getCredentials(type: string, itemIndex?: number): Promise<ICredentialDataDecryptedObject>;
-	getDefaultCredentials(type: string): Promise<any>;
+	getDefaultCredentials(type: string): Promise<ICredentialDataDecryptedObject | null>;
 	getExecutionId(): string;
 	getNode(): INode;
 	getWorkflow(): IWorkflowMetadata;

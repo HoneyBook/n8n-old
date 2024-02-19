@@ -15,5 +15,6 @@
 		{
 			"mode": "auto"
 		}
-	]
+	],
+	"testing.openTesting": "neverOpen"
 }
