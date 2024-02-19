@@ -40,6 +40,14 @@ export class CredentialsRepository extends Repository<CredentialsEntity> {
 		return await this.find(findManyOptions);
 	}
 
+	async findByTypeAndUser(userId: string, type: string) {
+		return await this.createQueryBuilder('credentials')
+			.leftJoinAndSelect('credentials.shared', 'sharedCredentials')
+			.where('credentials.type = :type', { type })
+			.andWhere('sharedCredentials.userId = :userId', { userId })
+			.getMany();
+	}
+
 	private toFindManyOptions(listQueryOptions?: ListQuery.Options) {
 		const findManyOptions: FindManyOptions<CredentialsEntity> = {};
 

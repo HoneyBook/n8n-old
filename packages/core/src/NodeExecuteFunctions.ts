@@ -1877,7 +1877,10 @@ export async function getDefaultCredentials(
 ): Promise<ICredentialDataDecryptedObject | null> {
 	// additionalData.credentialsHelper.
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-	const credentials = await additionalData.credentialsHelper.getCredentialsByType(type);
+	const credentials = await additionalData.credentialsHelper.getCredentialsByType(
+		additionalData.userId,
+		type,
+	);
 
 	if (credentials?.length === 0) {
 		return null;

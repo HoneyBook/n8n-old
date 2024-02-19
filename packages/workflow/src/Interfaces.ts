@@ -212,7 +212,7 @@ export abstract class ICredentialsHelper {
 		type: string,
 	): Promise<ICredentials>;
 
-	abstract getCredentialsByType(type: string): Promise<INodeCredentialsDetails[]>;
+	abstract getCredentialsByType(type: string, userId: string): Promise<INodeCredentialsDetails[]>;
 
 	abstract getDecrypted(
 		additionalData: IWorkflowExecuteAdditionalData,

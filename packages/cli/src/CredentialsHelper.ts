@@ -256,8 +256,8 @@ export class CredentialsHelper extends ICredentialsHelper {
 		return this.credentialTypes.getParentTypes(typeName);
 	}
 
-	async getCredentialsByType(type: string): Promise<CredentialsEntity[]> {
-		return await this.credentialsRepository.find({ where: { type } });
+	async getCredentialsByType(userId: string, type: string): Promise<CredentialsEntity[]> {
+		return await this.credentialsRepository.findByTypeAndUser(userId, type);
 	}
 
 	/**
