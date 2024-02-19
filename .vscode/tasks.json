@@ -1,10 +1,15 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build node-bases",
-            "type": "shell",
-            "command": "cd packages/nodes-base && pnpm build",
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build node-bases",
+			"type": "shell",
+			"command": "cd packages/nodes-base && pnpm build"
+		},
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "pnpm build"
+		}
+	]
 }

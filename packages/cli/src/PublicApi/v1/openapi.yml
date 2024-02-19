@@ -78,6 +78,6 @@ components:
       scheme: bearer
 
 security:
+  - HBJwtAuth: []
   - ApiKeyAuth: []
   - HBBasicAuth: []
-  - HBJwtAuth: []
