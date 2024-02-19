@@ -22,15 +22,6 @@ export class HoneyBook implements INodeType {
 		},
 		inputs: ['main'],
 		outputs: ['main'],
-		// credentials: [
-		// 	{
-		// 		name: 'honeyBookApi',
-		// 		// required: true,
-		// 		displayOptions: {
-		// 			show: {},
-		// 		},
-		// 	},
-		// ],
 		properties: [
 			{
 				displayName: 'Action',

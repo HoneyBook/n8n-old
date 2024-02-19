@@ -19,12 +19,6 @@ export class HoneyBookWebhookTrigger implements INodeType {
 		defaults: {
 			name: 'HoneyBook Webhook',
 		},
-		// credentials: [
-		// 	{
-		// 		name: 'honeyBookApi',
-		// 		required: true,
-		// 	},
-		// ],
 		webhooks: [
 			{
 				name: 'default',
