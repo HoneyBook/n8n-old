@@ -29,6 +29,7 @@ export class HoneyBookWebhookTrigger implements INodeType {
 		],
 		inputs: [],
 		outputs: ['main'],
+		useDefaultCredentials: 'honeBookApi',
 		properties: [
 			{
 				displayName: 'Events',

@@ -116,7 +116,9 @@ export const refreshExpiringCookie = (async (req: AuthenticatedRequest, res, nex
 
 // TODO: Oz: we can uncomment this to change the internal API auth to basic auth
 // const passportMiddleware = passport.authenticate('basic', { session: false }) as RequestHandler;
-const passportMiddleware = passport.authenticate(['n8n-jwt', 'hb-jwt', 'basic'], { session: false }) as RequestHandler;
+const passportMiddleware = passport.authenticate(['n8n-jwt', 'hb-jwt', 'basic'], {
+	session: false,
+}) as RequestHandler;
 
 const staticAssets = globSync(['**/*.html', '**/*.svg', '**/*.png', '**/*.ico'], {
 	cwd: EDITOR_UI_DIST_DIR,

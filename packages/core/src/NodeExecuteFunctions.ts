@@ -1735,8 +1735,12 @@ export async function requestWithAuthentication(
 			);
 		}
 
+		const nodeType = workflow.nodeTypes.getByNameAndVersion(node.type, node.typeVersion);
+
 		if (additionalCredentialOptions?.credentialsDecrypted) {
 			credentialsDecrypted = additionalCredentialOptions.credentialsDecrypted.data;
+		} else if (nodeType.description.useDefaultCredentials) {
+			credentialsDecrypted = (await this.getDefaultCredentials(credentialsType))!;
 		} else {
 			credentialsDecrypted = await this.getCredentials(credentialsType);
 		}

@@ -128,6 +128,18 @@ export class RoutingNode {
 					credentialType = undefined;
 				}
 			}
+		} else if (nodeType.description.useDefaultCredentials) {
+			try {
+				credentialType = nodeType.description.useDefaultCredentials;
+				const defaultCredentials = await executeFunctions.getDefaultCredentials(credentialType);
+
+				if (defaultCredentials) {
+					credentials = defaultCredentials;
+					credentialsDecrypted = { data: defaultCredentials } as ICredentialsDecrypted;
+				}
+			} catch (error) {
+				throw error;
+			}
 		}
 
 		// TODO: Think about how batching could be handled for REST APIs which support it

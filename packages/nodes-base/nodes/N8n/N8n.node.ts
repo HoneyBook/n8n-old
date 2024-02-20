@@ -24,12 +24,7 @@ export class N8n implements INodeType {
 		},
 		inputs: ['main'],
 		outputs: ['main'],
-		credentials: [
-			{
-				name: 'n8nApi',
-				required: true,
-			},
-		],
+		useDefaultCredentials: 'n8nApi',
 		requestDefaults: {
 			returnFullResponse: true,
 			baseURL: '={{ $credentials.baseUrl.replace(new RegExp("/$"), "") }}',

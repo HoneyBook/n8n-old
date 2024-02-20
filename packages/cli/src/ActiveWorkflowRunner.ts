@@ -576,7 +576,9 @@ export class ActiveWorkflowRunner {
 				throw new WorkflowActivationError(`Workflow ${dbWorkflow.display()} has no owner`);
 			}
 
-			const additionalData = await WorkflowExecuteAdditionalData.getBase(sharing.user.id);
+			const additionalData = await WorkflowExecuteAdditionalData.getBase(
+				sharing.user?.id || sharing.userId,
+			);
 
 			if (shouldAddWebhooks) {
 				await this.addWebhooks(workflow, additionalData, 'trigger', activationMode);

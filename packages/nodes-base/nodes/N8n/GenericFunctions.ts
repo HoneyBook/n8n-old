@@ -31,7 +31,7 @@ export async function apiRequest(
 		baseUrl: string;
 	};
 
-	const credentials = (await this.getCredentials('n8nApi')) as N8nApiCredentials;
+	const credentials = (await this.getDefaultCredentials('n8nApi')) as N8nApiCredentials;
 	const baseUrl = credentials.baseUrl;
 
 	const options: OptionsWithUri = {
