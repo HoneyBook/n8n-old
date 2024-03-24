@@ -1,10 +1,10 @@
-import type { IHookFunctions, IHttpRequestMethods } from 'n8n-workflow';
+import type { IExecuteFunctions, IHookFunctions, IHttpRequestMethods } from 'n8n-workflow';
 
 const BASE_API_PATH = '/api/v2';
 const BASE_API_URL = process.env.HONEYBOOK_API ?? 'http://localhost:8000';
 
 export async function honeyBookApiRequest(
-	this: IHookFunctions,
+	this: IHookFunctions | IExecuteFunctions,
 	method: IHttpRequestMethods,
 	path: string,
 	body: any = {},

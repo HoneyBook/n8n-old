@@ -13,8 +13,8 @@ export async function getPipelineStages(
 ): Promise<INodePropertyOptions[]> {
 	return [
 		{
-			name: 'Inquiry',
-			value: '1',
+			name: 'Meeting scheduled',
+			value: '650b468ff1e8d80008d1e8b4',
 		},
 		{
 			name: 'Proposal sent',

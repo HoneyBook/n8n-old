@@ -9,7 +9,7 @@ import type {
 	IDataObject,
 } from 'n8n-workflow';
 
-import { honeyBookApiRequest } from './honeyBookApi';
+import { honeyBookApiRequest } from '@utils/honeyBookApi';
 
 export class HoneyBookTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -131,9 +131,10 @@ export class HoneyBookTrigger implements INodeType {
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
-		const req = this.getRequestObject();
+		const body = this.getBodyData();
+		this.getWorkflowStaticData('global').workspaceId = body.workspace_id;
 		return {
-			workflowData: [this.helpers.returnJsonArray(req.body as IDataObject[])],
+			workflowData: [this.helpers.returnJsonArray(body)],
 		};
 	}
 }

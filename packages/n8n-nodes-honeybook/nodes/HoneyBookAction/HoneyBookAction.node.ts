@@ -4,18 +4,19 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 	IHookFunctions,
-	IWebhookFunctions,
-	IWebhookResponseData,
-	IDataObject,
+	IExecuteFunctions,
+	INodeExecutionData,
 } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 import {
 	createTaskProperties,
 	movePipelineStageProperties,
 	sendEmailProperties,
 	sendFilesProperties,
-	withActionShowFilter,
+	withActionDisplayOptions,
 } from './properties';
 import { getPipelineStages, getEmailTemplates, getFileTemplates, getTeamMembers } from './loaders';
+import { actions } from './actions';
 
 export class HoneyBookAction implements INodeType {
 	description: INodeTypeDescription = {
@@ -63,10 +64,10 @@ export class HoneyBookAction implements INodeType {
 				],
 				default: null,
 			},
-			...withActionShowFilter('send_email', sendEmailProperties),
-			...withActionShowFilter('send_file_via_email', sendFilesProperties),
-			...withActionShowFilter('create_task', createTaskProperties),
-			...withActionShowFilter('move_pipeline_stage', movePipelineStageProperties),
+			...withActionDisplayOptions('send_email', sendEmailProperties),
+			...withActionDisplayOptions('send_file_via_email', sendFilesProperties),
+			...withActionDisplayOptions('create_task', createTaskProperties),
+			...withActionDisplayOptions('move_pipeline_stage', movePipelineStageProperties),
 		],
 	};
 
@@ -93,10 +94,16 @@ export class HoneyBookAction implements INodeType {
 		},
 	};
 
-	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
-		const req = this.getRequestObject();
-		return {
-			workflowData: [this.helpers.returnJsonArray(req.body as IDataObject[])],
-		};
+	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		// workspaceId is saved by our trigger node
+		const action = this.getNodeParameter('action', 0) as string;
+
+		const actionFn = actions[action];
+		if (!actionFn) {
+			throw new NodeOperationError(this.getNode(), `The action "${action}" is not known!`);
+		}
+
+		const responseData = await actionFn.call(this);
+		return [this.helpers.returnJsonArray(responseData)];
 	}
 }

@@ -4,7 +4,7 @@
 /* eslint-disable n8n-nodes-base/node-param-display-name-wrong-for-dynamic-options */
 import type { INodeProperties } from 'n8n-workflow';
 
-export function withActionShowFilter(
+export function withActionDisplayOptions(
 	action: string,
 	properties: INodeProperties[],
 ): INodeProperties[] {
@@ -81,7 +81,7 @@ export const createTaskProperties: INodeProperties[] = [
 export const movePipelineStageProperties: INodeProperties[] = [
 	{
 		displayName: 'Stage',
-		name: 'stageId',
+		name: 'pipelineStageId',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getPipelineStages',
