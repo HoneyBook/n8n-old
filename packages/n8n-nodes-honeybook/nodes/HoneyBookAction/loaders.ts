@@ -28,8 +28,8 @@ export async function getEmailTemplates(
 ): Promise<INodePropertyOptions[]> {
 	return [
 		{
-			name: 'Welcome email',
-			value: '1',
+			name: 'Automations',
+			value: '6601893bbacc956acec44c68',
 		},
 		{
 			name: 'Get ready email',

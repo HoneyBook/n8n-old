@@ -50,8 +50,8 @@ export class HoneyBookAction implements INodeType {
 						value: 'send_email',
 					},
 					{
-						name: 'Send file via email',
-						value: 'send_file_via_email',
+						name: 'Send smart file via email',
+						value: 'send_flow_via_email',
 					},
 					{
 						name: 'Create task',
@@ -65,7 +65,7 @@ export class HoneyBookAction implements INodeType {
 				default: null,
 			},
 			...withActionDisplayOptions('send_email', sendEmailProperties),
-			...withActionDisplayOptions('send_file_via_email', sendFilesProperties),
+			...withActionDisplayOptions('send_flow_via_email', sendFilesProperties),
 			...withActionDisplayOptions('create_task', createTaskProperties),
 			...withActionDisplayOptions('move_pipeline_stage', movePipelineStageProperties),
 		],
