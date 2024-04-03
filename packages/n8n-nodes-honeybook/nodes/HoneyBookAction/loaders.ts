@@ -43,8 +43,8 @@ export async function getFileTemplates(
 ): Promise<INodePropertyOptions[]> {
 	return [
 		{
-			name: 'Invoice template',
-			value: '1',
+			name: 'Copy of Wedding Day Questionnaire',
+			value: '65b7729bbacc95a960b1936b',
 		},
 		{
 			name: 'Full proposal template',
@@ -56,8 +56,8 @@ export async function getFileTemplates(
 export async function getTeamMembers(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 	return [
 		{
-			name: 'John Doe',
-			value: '1',
+			name: 'Hannah Martin',
+			value: '643f0c51ce702d002ea10146',
 		},
 		{
 			name: 'Bob Smith',
