@@ -1,0 +1,11 @@
+{
+	"nodes": {
+		"communityPackages": {
+			"enabled": true
+		},
+		"include": [
+			"CUSTOM.honeyBookAction",
+			"CUSTOM.honeyBookTrigger"
+		]
+	}
+}

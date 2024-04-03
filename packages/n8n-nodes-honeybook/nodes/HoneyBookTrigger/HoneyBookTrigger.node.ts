@@ -15,11 +15,11 @@ export class HoneyBookTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Trigger',
 		name: 'honeyBookTrigger',
-		icon: 'file:honeybook.svg',
+		icon: 'hb-icon:Lightning24.svg',
 		group: ['trigger', 'HoneyBook'],
 		version: 1,
-		subtitle: '={{$parameter["event"]}}',
-		description: 'Consume HB API',
+		subtitle: '={{$parameter["event"] || "Set a trigger in the sidebar"}}',
+		description: 'A trigger is an event that causes an automation to start running.',
 		defaults: {
 			name: 'Trigger',
 		},
